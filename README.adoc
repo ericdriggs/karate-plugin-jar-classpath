@@ -1,0 +1,35 @@
+= karate-plugin-jar-classpath
+
+== Issues
+1. cannot step into call read('classpath:...) for features provided by jars
+2. breakpoints from features provided by jars are ignored/skipped
+
+
+== Maven Setup
+
+    cd jar-called
+    mvn install
+
+== Intellij setup
+
+* open jar-caller as project in Intellij
+* set breakpoint on External Libraries->io.github.ericdriggs:jar-called:1.0-SNAPSHOT examples.users/user1-get.feature
+* set breakpoint on call-user1-get.feature
+* debug call-user1-get.feature
+
+== Reproduce
+1. attempt to step into `* call read('classpath:examples/users/user1-get.feature')`
+
+
+    ```
+    java.lang.NullPointerException: Cannot invoke "java.io.File.getName()" because "file" is null
+    at io.karatelabs.debug.StackFrame.<init>(StackFrame.java:30)
+    at io.karatelabs.debug.DapServerHandler.frames(DapServerHandler.java:129)
+    at io.karatelabs.debug.DapServerHandler.handleRequest(DapServerHandler.java:255)
+    at io.karatelabs.debug.DapServerHandler.channelRead0(DapServerHandler.java:208)
+    at io.karatelabs.debug.DapServerHandler.channelRead0(DapServerHandler.java:24)...
+    ```
+
+2. remove breakpoint in call-user1-get.feature, then debug
+
+* breakpoint in user1-get.feature is ignored
